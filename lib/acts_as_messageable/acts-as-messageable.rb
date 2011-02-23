@@ -67,7 +67,7 @@ module ActsAsMessageable
       
         @message = ActsAsMessageable::Message.create
                 
-        raise ActsAsMessageable::MessageInvalid.new(@message) unless @message
+        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?
           
         @message.topic, @message.body = topic, body
 
