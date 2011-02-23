@@ -65,11 +65,10 @@ module ActsAsMessageable
 
       def send_msg(to, topic, body)
       
-        @message = ActsAsMessageable::Message.create
+        @message = ActsAsMessageable::Message.create(:topic => topic, :body => body)
                 
-        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?
-          
-        @message.topic, @message.body = topic, body
+        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
+        
 
         self.sent_messages << @message
         to.received_messages << @message 
