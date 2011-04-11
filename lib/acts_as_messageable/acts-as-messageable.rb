@@ -22,19 +22,19 @@ module ActsAsMessageable
 
     module ClassMethods
       def acts_as_messageable options = {}
-      options[:dependent] ||= :nullify
-      class_eval do
-        has_many :recv, :as => :received_messageable  , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
-        has_many :sent, :as => :sent_messageable      , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
+        options[:dependent] ||= :nullify
+        class_eval do
+          has_many :recv, :as => :received_messageable  , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
+          has_many :sent, :as => :sent_messageable      , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
+          include ActsAsMessageable::User::InstanceMethods
+        end        
       end
-      include ActsAsMessageable::User::InstanceMethods
-    end
-      
+    end  
     
 
     module InstanceMethods
       def messages
-        self.recv + self.sent
+        ActsAsMessageable::Message.where("(sent_messageable_type = ? and sent_messageable_id = ? ) or (received_messageable_type = ? and received_messageable_id = ?)" , self.class.name , self.id ,  self.class.name , self.id )
       end
       
       def from_messages from
@@ -50,14 +50,7 @@ module ActsAsMessageable
         @message = to.recv  << (self.sent.build  :topic => topic, :body => body)
         raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
       end
-      
     end
-
-
-
-      
-
-    end
-
+    
   end
 end

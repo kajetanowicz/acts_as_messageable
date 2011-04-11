@@ -14,18 +14,22 @@ module ActsAsMessageable
     validates_presence_of :topic ,:body
 
     
-    scope :deleted , where("recipient_delete = ? or sender_delete = ?" , true , true )
+    #for some reason doing  scope :deleted , ...  causes problems
+    def self.deleted
+      where("recipient_delete = ? or sender_delete = ?" , true , true )
+    end
+    
     
     def open
       self.opened = true
     end
 
     def from
-      sent_messageable
+      self.sent_messageable
     end
 
     def to
-      received_messageable
+      self.received_messageable
     end
 
   end
