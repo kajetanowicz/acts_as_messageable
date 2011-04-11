@@ -14,6 +14,8 @@ module ActsAsMessageable
     validates_presence_of :topic ,:body
 
     
+    scope :deleted , where("recipient_delete = ? or sender_delete = ?" , true , true )
+    
     def open
       self.opened = true
     end
