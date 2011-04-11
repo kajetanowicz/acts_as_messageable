@@ -18,10 +18,11 @@ module ActsAsMessageable
     end
 
     module ClassMethods
-      def acts_as_messageable
+      def acts_as_messageable options = {}
+      options[:dependent] ||= :nullify
       class_eval do
-        has_many :recv, :as => :received_messageable  , :class_name => "ActsAsMessageable::Message" , :dependent => :nullify
-        has_many :sent, :as => :sent_messageable      , :class_name => "ActsAsMessageable::Message" , :dependent => :nullify        
+        has_many :recv, :as => :received_messageable  , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
+        has_many :sent, :as => :sent_messageable      , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
       end
 
       include ActsAsMessageable::User::InstanceMethods
