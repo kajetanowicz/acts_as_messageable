@@ -10,3 +10,6 @@ $LOAD_PATH.shift
 if defined?(ActiveRecord::Base)
   ActiveRecord::Base.send :include, ActsAsMessageable::User
 end
+
+
+

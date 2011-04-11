@@ -20,8 +20,8 @@ module ActsAsMessageable
     module ClassMethods
       def acts_as_messageable
       class_eval do
-        has_many :received_messages, :as => :received_messageable, :class_name => "ActsAsMessageable::Message" , :dependent => :nullify
-        has_many :sent_messages, :as => :sent_messageable, :class_name => "ActsAsMessageable::Message" , :dependent => :nullify 
+        has_many :recv, :as => :received_messageable  , :class_name => "ActsAsMessageable::Message" , :dependent => :nullify
+        has_many :sent, :as => :sent_messageable      , :class_name => "ActsAsMessageable::Message" , :dependent => :nullify        
       end
 
       include ActsAsMessageable::User::InstanceMethods
@@ -55,23 +55,12 @@ module ActsAsMessageable
         all
       end
 
-      def recv
-        self.received_messages
-      end
 
-      def sent
-        self.sent_messages
-      end
 
-      def send_msg(to, topic, body)
-      
-        @message = ActsAsMessageable::Message.create(:topic => topic, :body => body)
-                
-        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
+      def send_msg(to, topic, body)         
         
-
-        self.sent_messages << @message
-        to.received_messages << @message 
+        @message = to.recv  << self.sent.build  :topic => topic, :body => body
+        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
       end
 
     end
