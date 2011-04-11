@@ -35,12 +35,12 @@ module ActsAsMessageable
       end
       
       def from_messages from
-        messages.where :sent_messageable_id => from.id
+        messages.where :sent_messageable_id => from.id , :sent_messageable_type => from.name
       end
       
       
       def to_messages to
-        messages.where :received_messageable_id => to.id
+        messages.where :received_messageable_id => to.id , :received_messageable_type => to.name
       end
       
     end
