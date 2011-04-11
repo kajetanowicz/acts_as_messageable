@@ -16,6 +16,9 @@ module ActsAsMessageable
     def self.included(base)
       base.extend ClassMethods
     end
+    
+    
+    
 
     module ClassMethods
       def acts_as_messageable options = {}
@@ -24,11 +27,10 @@ module ActsAsMessageable
         has_many :recv, :as => :received_messageable  , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
         has_many :sent, :as => :sent_messageable      , :class_name => "ActsAsMessageable::Message" , :dependent => options[:dependent]
       end
-
       include ActsAsMessageable::User::InstanceMethods
     end
       
-    end
+    
 
     module InstanceMethods
       def messages
@@ -44,15 +46,16 @@ module ActsAsMessageable
         messages.where :received_messageable_id => to.id , :received_messageable_type => to.name
       end
       
+      def send_msg(to, topic, body)                 
+        @message = to.recv  << (self.sent.build  :topic => topic, :body => body)
+        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
+      end
+      
     end
 
 
 
-      def send_msg(to, topic, body)         
-        
-        @message = to.recv  << self.sent.build  :topic => topic, :body => body
-        raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
-      end
+      
 
     end
 
