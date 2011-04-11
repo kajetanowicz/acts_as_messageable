@@ -47,7 +47,8 @@ module ActsAsMessageable
       end
       
       def send_msg(to, topic, body)                 
-        @message = to.recv  << (self.sent.build  :topic => topic, :body => body)
+        @message = self.sent.build(:topic => topic, :body => body)
+        to.recv  << @message
         raise ActsAsMessageable::MessageInvalid.new(@message) if @message.invalid?         
       end
     end
