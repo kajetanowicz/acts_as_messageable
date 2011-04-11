@@ -30,30 +30,20 @@ module ActsAsMessageable
     end
 
     module InstanceMethods
-      def msg(args = {})
-
-        all = self.recv + self.sent
-
-        if args[:from]
-          all.reject! do |m|
-            m.sent_messageable_id != args[:from].id
-          end
-        end
-
-        if args[:to]
-          all.reject! do |m|
-            m.received_messageable_id != args[:to].id
-          end
-        end
-
-        if args[:id] != nil
-          all.reject! do |m|
-            m.id != args[:id].to_i
-          end
-        end
-
-        all
+      def messages
+        self.recv + self.sent
       end
+      
+      def from_messages from
+        messages.where :sent_messageable_id => from.id
+      end
+      
+      
+      def to_messages to
+        messages.where :received_messageable_id => to.id
+      end
+      
+    end
 
 
 
